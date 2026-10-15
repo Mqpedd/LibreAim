@@ -3,9 +3,11 @@ extends Node
 
 const USER_PATH: String = "user://custom_resources/"
 const DEFAULT_PATH :String = "res://assets/default_data/custom_resources/"
+const SOUND_EXTENSIONS := "ogg,wav,mp3"
 
 ## Returns full paths with USER_PATH or DEFAULT_PATH already included
 ## If 'extension' argument is empty, will ignore extensions entirely
+## 'extension' can list several, separated by commas
 func get_file_list(partial_path: String, extension: String = "", include_default: bool = true) -> PackedStringArray:
 	var full_path := USER_PATH + partial_path
 	DirAccess.make_dir_recursive_absolute(full_path)
@@ -41,7 +43,36 @@ func get_image(full_path: String) -> Texture2D:
 func get_sound(full_path: String) -> AudioStream:
 	if full_path.begins_with(DEFAULT_PATH):
 		return load(full_path)
+	match full_path.get_extension().to_lower():
+		"wav":
+			return AudioStreamWAV.load_from_file(full_path)
+		"mp3":
+			return AudioStreamMP3.load_from_file(full_path)
 	return AudioStreamOggVorbis.load_from_file(full_path)
+
+## Copies a sound file into the user folder. Returns the new path, or "" if
+## the file is not a sound the game can play.
+func import_sound(source_path: String, partial_path: String) -> String:
+	if not _extension_matches(source_path, SOUND_EXTENSIONS):
+		return ""
+	var folder := USER_PATH + partial_path + "/"
+	DirAccess.make_dir_recursive_absolute(folder)
+	var base_name := source_path.get_file().get_basename()
+	var extension := source_path.get_extension().to_lower()
+	var destination := folder + base_name + "." + extension
+	var source_md5 := FileAccess.get_md5(source_path)
+	var i := 2
+	while FileAccess.file_exists(destination):
+		if FileAccess.get_md5(destination) == source_md5:
+			return destination
+		destination = folder + "%s (%d).%s" % [base_name, i, extension]
+		i += 1
+	if DirAccess.copy_absolute(source_path, destination) != OK:
+		return ""
+	if get_sound(destination) == null:
+		DirAccess.remove_absolute(destination)
+		return ""
+	return destination
 
 func copy_sample_custom_resources() -> void:
 	_copy_dir_recursively("res://assets/sample_custom_resources/", USER_PATH)
@@ -81,7 +112,7 @@ func _get_file_list_raw(full_path: String, extension: String) -> PackedStringArr
 func _extension_matches(path: String, extension: String) -> bool:
 	if extension == "":
 		return true
-	return path.get_extension() == extension
+	return path.get_extension().to_lower() in extension.split(",")
 
 ## Copies a complete file structure into another location
 func _copy_dir_recursively(source: String, destination: String) -> void:

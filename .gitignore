@@ -17,3 +17,6 @@ mono_crash.*.json
 
 # My ignores
 *.tmp
+
+# Written by the release workflow
+/build_info.cfg

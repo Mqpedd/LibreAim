@@ -40,11 +40,11 @@ func get_scenario_thumbnail(path: String) -> Texture2D:
 	return load("res://assets/images/missing.svg")
 
 func get_destroy_sounds() -> PackedStringArray:
-	return CustomResourceManager.get_file_list(DESTROY_SOUNDS_FOLDER, "ogg")
+	return CustomResourceManager.get_file_list(DESTROY_SOUNDS_FOLDER, CustomResourceManager.SOUND_EXTENSIONS)
 
 func get_current_world_texture() -> Texture2D:
 	var current_texture = SaveManager.settings.get_data("world", "world_texture")
-	if not FileAccess.file_exists(current_texture):
+	if not _resource_exists(current_texture):
 		push_warning("Texture not found: %s" % current_texture)
 		current_texture = SaveManager.settings.get_default_data("world", "world_texture")
 		SaveManager.settings.set_data("world", "world_texture", current_texture)
@@ -53,12 +53,17 @@ func get_current_world_texture() -> Texture2D:
 
 func get_current_hit_sound() -> AudioStream:
 	var current_sound = SaveManager.settings.get_data("audio", "hit_sound")
-	if not FileAccess.file_exists(current_sound):
+	if not _resource_exists(current_sound):
 		push_warning("Sound not found: %s" % current_sound)
 		current_sound = SaveManager.settings.get_default_data("audio", "hit_sound")
 		SaveManager.settings.set_data("audio", "hit_sound", current_sound)
 	var sound := CustomResourceManager.get_sound(current_sound)
 	return sound
+
+## Built-in files only exist as imported resources in exported builds,
+## so FileAccess alone can't find them there.
+func _resource_exists(path: String) -> bool:
+	return ResourceLoader.exists(path) or FileAccess.file_exists(path)
 
 func _load_scenarios() -> void:
 	for path: String in Global.get_scenarios():
