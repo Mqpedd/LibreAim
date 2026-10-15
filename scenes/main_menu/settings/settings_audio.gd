@@ -3,13 +3,16 @@ extends Control
 ## Audio settings
 
 @onready var option_button := $OptionButton
+@onready var file_import := $ImportFileDialog
 
 func _ready() -> void:
+	file_import.visible = false
 	_set_volume_label()
 	_add_destroy_sounds(option_button)
 	_set_selected_sound_index()
 
 func _add_destroy_sounds(options_button: OptionButton):
+	options_button.clear()
 	var i = 0
 	for path:String in Global.get_destroy_sounds():
 		options_button.add_item(path.get_file(), i)
@@ -38,3 +41,17 @@ func _set_selected_sound_index() -> void:
 	for i in range(option_button.item_count):
 		if selected == option_button.get_item_metadata(i):
 			option_button.select(i)
+
+func _on_import_pressed() -> void:
+	file_import.visible = true
+
+func _on_import_file_dialog_file_selected(path: String) -> void:
+	var new_path := CustomResourceManager.import_sound(path, Global.DESTROY_SOUNDS_FOLDER)
+	if new_path.is_empty():
+		push_warning("Could not import sound %s" % path)
+		return
+	SaveManager.settings.set_data("audio", "hit_sound", new_path)
+	_add_destroy_sounds(option_button)
+	_set_selected_sound_index()
+	$Preview/AudioStreamPlayer.update_hit_sound()
+	$Preview/AudioStreamPlayer.play()

@@ -40,7 +40,7 @@ func get_scenario_thumbnail(path: String) -> Texture2D:
 	return load("res://assets/images/missing.svg")
 
 func get_destroy_sounds() -> PackedStringArray:
-	return CustomResourceManager.get_file_list(DESTROY_SOUNDS_FOLDER, "ogg")
+	return CustomResourceManager.get_file_list(DESTROY_SOUNDS_FOLDER, CustomResourceManager.SOUND_EXTENSIONS)
 
 func get_current_world_texture() -> Texture2D:
 	var current_texture = SaveManager.settings.get_data("world", "world_texture")

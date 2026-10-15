@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://dhe0v0qwojerb"]
+[gd_scene load_steps=5 format=3 uid="uid://dhe0v0qwojerb"]
 
 [ext_resource type="Script" uid="uid://dgg0fa81ahgss" path="res://scenes/main_menu/settings/settings_audio.gd" id="1_d47x0"]
 [ext_resource type="Texture2D" uid="uid://nng31j22g6fh" path="res://assets/images/icons/play.svg" id="2_38j32"]
 [ext_resource type="Script" uid="uid://d0234x8uu2y3k" path="res://scenes/game_world/destroyed_sound.gd" id="3_gwiy3"]
+[ext_resource type="Texture2D" uid="uid://btgrnb8ku7dyk" path="res://assets/images/icons/import-file.svg" id="4_import"]
 
 [node name="Audio" type="VBoxContainer"]
 offset_right = 162.0
@@ -41,7 +42,24 @@ script = ExtResource("3_gwiy3")
 [node name="OptionButton" type="OptionButton" parent="."]
 layout_mode = 2
 
+[node name="Import" type="Button" parent="."]
+layout_mode = 2
+text = "Import sound"
+icon = ExtResource("4_import")
+alignment = 0
+
+[node name="ImportFileDialog" type="FileDialog" parent="."]
+title = "Import a hit sound"
+size = Vector2i(1280, 720)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.ogg, *.wav, *.mp3 ; Sound files")
+use_native_dialog = true
+
 [connection signal="value_changed" from="VolumeSlider" to="." method="_on_volume_slider_value_changed"]
 [connection signal="value_changed" from="VolumeSlider" to="Preview/AudioStreamPlayer" method="_on_volume_updated"]
 [connection signal="pressed" from="Preview" to="." method="_on_preview_pressed"]
 [connection signal="item_selected" from="OptionButton" to="." method="_on_option_button_item_selected"]
+[connection signal="pressed" from="Import" to="." method="_on_import_pressed"]
+[connection signal="file_selected" from="ImportFileDialog" to="." method="_on_import_file_dialog_file_selected"]
