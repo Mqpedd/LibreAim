@@ -6,6 +6,10 @@ extends Control
 func _ready() -> void:
 	$LeftControl/VBoxContainer/Play.grab_focus()
 	_hide_options()
+	if Updater.is_update_available:
+		_show_update_button()
+	else:
+		Updater.update_available.connect(_show_update_button)
 
 func _on_play_pressed() -> void:
 	_hide_options()
@@ -23,6 +27,18 @@ func _on_source_code_pressed() -> void:
 
 func _on_user_folder_pressed():
 	OS.shell_show_in_file_manager(ProjectSettings.globalize_path("user://"))
+
+func _on_update_pressed() -> void:
+	var button := $LeftControl/VBoxContainer/Update
+	if Updater.is_translocated():
+		button.text = "Move LibreAim to Applications to update"
+		return
+	button.text = "Updating..."
+	button.disabled = true
+	Updater.apply_update()
+
+func _show_update_button() -> void:
+	$LeftControl/VBoxContainer/Update.visible = true
 
 ## Hide all right panel options
 func _hide_options() -> void:

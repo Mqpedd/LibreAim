@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://c8on0ngoa3108"]
+[gd_scene load_steps=24 format=3 uid="uid://c8on0ngoa3108"]
 
 [ext_resource type="Theme" uid="uid://caf1fphx2xqt0" path="res://assets/themes/main_menu.tres" id="1_2h7x4"]
 [ext_resource type="Script" uid="uid://dw5gwf5bgcody" path="res://scenes/main_menu/main_menu.gd" id="1_p06gh"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://cropshnueuiqr" path="res://scenes/main_menu/settings/settings.tscn" id="8_1n7gf"]
 [ext_resource type="Texture2D" uid="uid://crtp1xg7nyhki" path="res://assets/images/icons/folder.svg" id="8_cvdmj"]
 [ext_resource type="PackedScene" uid="uid://bx5lej1m0kvgb" path="res://scenes/main_menu/select_scenario.tscn" id="9_lii3m"]
+[ext_resource type="Texture2D" uid="uid://c67itufrdktq0" path="res://assets/images/icons/replay.svg" id="10_update"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pfoy0"]
 
@@ -121,6 +122,14 @@ text = "Source code"
 icon = ExtResource("4_nuriq")
 alignment = 0
 
+[node name="Update" type="Button" parent="LeftControl/VBoxContainer"]
+visible = false
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "Update available"
+icon = ExtResource("10_update")
+alignment = 0
+
 [node name="Quit" type="Button" parent="LeftControl/VBoxContainer"]
 layout_mode = 2
 mouse_default_cursor_shape = 2
@@ -145,4 +154,5 @@ layout_mode = 1
 [connection signal="pressed" from="LeftControl/VBoxContainer/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="LeftControl/VBoxContainer/UserFolder" to="." method="_on_user_folder_pressed"]
 [connection signal="pressed" from="LeftControl/VBoxContainer/SourceCode" to="." method="_on_source_code_pressed"]
+[connection signal="pressed" from="LeftControl/VBoxContainer/Update" to="." method="_on_update_pressed"]
 [connection signal="pressed" from="LeftControl/VBoxContainer/Quit" to="." method="_on_quit_pressed"]

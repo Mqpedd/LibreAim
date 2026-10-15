@@ -24,6 +24,7 @@ SaveManager="*res://scenes/autoload/save_manager.gd"
 DisplayManager="*res://scenes/autoload/display_manager.gd"
 OverlayUi="*res://scenes/autoload/overlay_ui.tscn"
 CustomResourceManager="*res://scenes/autoload/custom_resource_manager.gd"
+Updater="*res://scenes/autoload/updater.gd"
 
 [display]
 
